@@ -1,1 +1,95 @@
-<p>products works!</p>
+<!-- Contenedor principal con margen vertical -->
+<div class="container py-4">
+
+  <!-- Encabezado con título y botón para agregar productos -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Productos</h2>
+    <button class="btn btn-success" (click)="startAdd()">
+      <i class="bi bi-plus-circle"></i> Agregar producto
+    </button>
+  </div>
+
+  <!-- Tabla responsiva que lista los productos -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Iteración de productos mostrados en la tabla -->
+        <tr *ngFor="let p of productos">
+          <td>{{ p.id }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.descripcion }}</td>
+          <!-- Formato de moneda colombiana -->
+          <td>{{ p.precio | currency:'COP':'symbol':'1.0-0' }}</td>
+          <td>
+            <!-- Botón para editar -->
+            <button class="btn btn-sm btn-primary me-1" (click)="startEdit(p)">
+              Editar
+            </button>
+            <!-- Botón para eliminar -->
+            <button class="btn btn-sm btn-danger" (click)="delete(p.id)">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Bootstrap para agregar/editar productos -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <!-- Formulario enlazado -->
+    <form [formGroup]="form" (ngSubmit)="submit()" class="modal-content">
+      <div class="modal-header">
+        <!-- Título dinámico según modo -->
+        <h5 class="modal-title">{{ editMode ? 'Editar producto' : 'Agregar producto' }}</h5>
+        <!-- Botón de cierre -->
+        <button type="button" class="btn-close" (click)="cancel()"></button>
+      </div>
+
+      <!-- Cuerpo del formulario con campos -->
+      <div class="modal-body">
+        <!-- Campo ID (solo lectura) -->
+        <div class="mb-3">
+          <label class="form-label">ID</label>
+          <input formControlName="id" type="text" class="form-control" readonly>
+        </div>
+        <!-- Campo nombre -->
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input formControlName="nombre" type="text" class="form-control" required>
+        </div>
+        <!-- Campo descripción -->
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <textarea formControlName="descripcion" class="form-control" rows="2" required></textarea>
+        </div>
+        <!-- Campo precio -->
+        <div class="mb-3">
+          <label class="form-label">Precio</label>
+          <input formControlName="precio" type="number" class="form-control" min="0" required>
+        </div>
+      </div>
+
+      <!-- Pie del formulario con botones -->
+      <div class="modal-footer">
+        <!-- Botón de envío -->
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          {{ editMode ? 'Actualizar' : 'Agregar' }}
+        </button>
+        <!-- Botón de cancelar -->
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
